@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.mycompany.bankocr.OcrDigitTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2014-12-22T06:29:35" hostname="Scotts-MacBook-Pro-2.local" time="0.032">
+  <properties/>
+  <testcase name="Convert OCR Number to a Decimal Number" classname="org.mycompany.bankocr.OcrDigitTest" time="0.026"/>
+  <testcase name="Convert unrecognizable OCR Number to a Question Mark" classname="org.mycompany.bankocr.OcrDigitTest" time="0.001"/>
+  <testcase name="Find OCR Digit Enum from a string of nine characters" classname="org.mycompany.bankocr.OcrDigitTest" time="0.003"/>
+  <testcase name="Return null trying to find OCR Digit Enum from a string that does not match any OCR number" classname="org.mycompany.bankocr.OcrDigitTest" time="0.002"/>
+  <system-out><![CDATA[Configuring com.athaydes.spockframework.report.SpockReportExtension
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

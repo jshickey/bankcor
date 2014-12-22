@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OcrFileReader.groovy</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bankocr</a> &gt; <a href="index.source.html" class="el_package">org.mycompany.bankocr</a> &gt; <span class="el_source">OcrFileReader.groovy</span></div><h1>OcrFileReader.groovy</h1><pre class="source lang-java linenums">package org.mycompany.bankocr
+
+
+class OcrFileReader {
+	static final int ROWS_PER_ACCOUNT = 3
+	static final int CHARS_PER_DIGIT = 3
+
+	List&lt;String&gt; createAccountNumberReportFromFile(String file) {
+<span class="pc bpc" id="L9" title="2 of 4 branches missed.">		collectAccountNumbersFromFile(file).collect { acctNum -&gt;</span>
+<span class="fc" id="L10">	 		def finding = accountNumberFinding(acctNum)</span>
+<span class="pc bfc" id="L11" title="All 2 branches covered.">			finding ? &quot;$acctNum $finding&quot; : acctNum</span>
+		}
+	}
+
+	String accountNumberFinding(String accountNumber) {
+<span class="pc bpc" id="L16" title="4 of 8 branches missed.">		if (accountNumber.contains('?')) {</span>
+<span class="pc" id="L17">			'ILL'</span>
+<span class="pc bpc" id="L18" title="2 of 4 branches missed.">		} else if (validateAccountNumber(accountNumber)) {</span>
+<span class="pc" id="L19">		 	''</span>
+		} else {
+<span class="pc" id="L21">			'ERR'</span>
+		}
+	}
+
+
+	List&lt;String&gt; collectAccountNumbersFromFile(String file) {
+<span class="pc" id="L27">		collectAccountNumbers([], new File(file).readLines())</span>
+	}
+
+	/**
+	*  Note we drop one extra line than we take because of the trailing blank line
+	*  between the OCR bank account numbers.
+	*/
+	List&lt;String&gt; collectAccountNumbers(List&lt;String&gt; acc, List&lt;String&gt; lines) {
+<span class="pc bpc" id="L35" title="5 of 10 branches missed.">		lines ? collectAccountNumbers(acc &lt;&lt; convertOcrDigitsToAccountNumber(lines.take(ROWS_PER_ACCOUNT)), </span>
+<span class="pc" id="L36">																			 lines.drop(ROWS_PER_ACCOUNT +1))</span>
+              : acc
+	}
+
+	/**
+	 * Returns collection of size 3, each element contains list of 9 three-char segments.
+	 *
+	 * .transpose() acts like a zipper, creating a list of lists based on the corresponding
+	 * positions in each of the three collections.
+	 *
+	 * .join() will create one OCR Digit string from the 1st, 2nd and 3rd part of each OCR Digit
+	 *  OcrDigit.ocrToDecimal(it)
+	 *
+ 	 */
+	String convertOcrDigitsToAccountNumber(List&lt;String&gt; lines) {
+<span class="pc" id="L51">		collectSplitOcrDigitsLines([] ,lines)</span>
+			.transpose()
+			*.join()
+<span class="pc" id="L54">			.collect { OcrDigit.ocrToDecimal(it) }</span>
+			.join()
+	}
+
+	/**
+	 * Returns a collection of 3 lists, each list have the 9 distinct parts from reading one of the
+	 * three rows in a Bank OCR Account number.
+	 *
+	 * @param lines - List of raw OCR account number lines to process
+	 * @return list of lists of distinct OCR digit segments
+	 *
+	 */
+	List&lt;List&lt;String&gt;&gt; collectSplitOcrDigitsLines(List&lt;String&gt; lines) {
+<span class="nc" id="L67">		collectSplitOcrDigitsLines([] ,lines)</span>
+	}
+
+	/**
+	 * Recursive helper for collectSplitOcrDigitsLines(),
+	 * processing each of the three lines that makeup a Bank OCR Account Number.
+	 *
+	 * @param acc - accumulator for the collections of 3 character segments
+	 * @param l - list of raw OCR account number lines to process
+	 * @return list of lists of distinct OCR digit segments
+	 */
+	List&lt;List&lt;String&gt;&gt; collectSplitOcrDigitsLines(List&lt;List&lt;String&gt;&gt; acc, List&lt;String&gt; l) {
+<span class="pc bfc" id="L79" title="All 2 branches covered.">		l ? collectSplitOcrDigitsLines(acc &lt;&lt; splitOctDigitLine([],l.first()), l.tail())</span>
+	      : acc
+	}
+
+	/** 
+	 * Returns collection of size 9, each list element contains three character string
+	 * representing part of an OCR Digit
+	 * 
+	 * @param s - the string containing one line from an OCR file
+	 * @return the list of 9 OCR digit segments
+	 */
+	List&lt;String&gt; splitOcrDigitLine(String s) {
+<span class="nc" id="L91">		splitOctDigitLine([], s)</span>
+	}
+
+	/**
+	 * Returns collection of size 9, each list element contains three character string
+	 * representing part of an OCR Digit. Recursive works through the OCR Digit line.
+	 *
+	 * For example, if the first part of an unprocessed row OCR Number row is &quot; _ |_|&quot;,
+	 * 	this method will return [' _ ','|_|']
+	 *
+	 * @param acc - accumulator for each 3 character segment
+	 * @param s - the string containing OCR Digit segments to be read
+	 * @return the list of distinct OCR digit segments
+	 */
+
+	List&lt;String&gt; splitOctDigitLine(List&lt;String&gt; acc, String s) {
+<span class="pc bfc" id="L107" title="All 2 branches covered.">		s ? splitOctDigitLine(acc + s.take(CHARS_PER_DIGIT), s.drop(CHARS_PER_DIGIT))</span>
+          : acc 
+	}
+
+
+	/*
+	  The forumla for computing a check sum to validate an account is the following:
+		account number:  3  4  5  8  8  2  8  6  5
+		position names:  d9 d8 d7 d6 d5 d4 d3 d2 d1
+
+		checksum calculation:
+
+		((1*d1) + (2*d2) + (3*d3) + ... + (9*d9)) mod 11 == 0
+	*/
+	boolean validateAccountNumber(String accountNumber) {
+<span class="pc bpc" id="L122" title="6 of 12 branches missed.">		computeCheckSum(accountNumber) == 0</span>
+	}
+	
+	int computeCheckSum(String accountNumber) {
+<span class="pc" id="L126">		computeCheckSumHelper(0, 1, accountNumber.reverse()) % 11</span>
+	}
+
+	int computeCheckSumHelper(int acc, int idx, String accountNumber) {
+<span class="pc bpc" id="L130" title="5 of 10 branches missed.">		accountNumber ? computeCheckSumHelper(acc + (idx * accountNumber.take(1).toInteger()), idx +1, accountNumber.drop(1))</span>
+			          : acc
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

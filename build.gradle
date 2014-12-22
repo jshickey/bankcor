@@ -1,0 +1,26 @@
+apply plugin: "groovy"
+apply plugin: "application"
+apply plugin: "jacoco"
+
+/**
+ * The Jacoco reports don't really do a great job of code coverage when coding in a functional style.
+ * 
+ */
+repositories {
+    mavenCentral()
+	jcenter()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.7'
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	testCompile 'com.athaydes:spock-reports:1.2.3'
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination "${buildDir}/jacocoHtml"
+	}
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.mycompany.bankocr.OcrocrAcctReaderTest" tests="23" skipped="0" failures="0" errors="0" timestamp="2014-12-22T06:29:35" hostname="Scotts-MacBook-Pro-2.local" time="0.244">
+  <properties/>
+  <testcase name="Test with 500 accounts - crate report with findings(valid,error,illegible) from five-hundred-accounts.txt" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.215"/>
+  <testcase name="Test creating an account number report with findings(valid,error,illegible) from account-numbers-all-types.txt" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.003"/>
+  <testcase name="Test valid checksum" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Test verification using checksum for 711111111 is true" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test verification using checksum for 123456789 is true" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test verification using checksum for 490867715 is true" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test verification using checksum for 888888888 is false" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test verification using checksum for 490067715 is false" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test verification using checksum for 012345678 is false" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Test reading accounts from a file with one account" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Test reading accounts from a file with many accounts" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.002"/>
+  <testcase name="Convert OCR Digit version of 000000000" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.002"/>
+  <testcase name="Convert OCR Digit version of 111111111" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Convert OCR Digit version of 222222222" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Convert OCR Digit version of 333333333" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Convert OCR Digit version of 444444444" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Convert OCR Digit version of 555555555" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Convert OCR Digit version of 666666666" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.001"/>
+  <testcase name="Convert OCR Digit version of 777777777" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Convert OCR Digit version of 888888888" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Convert OCR Digit version of 999999999" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Convert OCR Digit version of 123456789" classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.0"/>
+  <testcase name="Parse continuous line of OCR characters into collection of 9 distinct OCR segments " classname="org.mycompany.bankocr.OcrocrAcctReaderTest" time="0.006"/>
+  <system-out><![CDATA[large report produced 641 accounts with findings
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
