@@ -3,7 +3,7 @@ package org.mycompany.bankocr
 import spock.lang.*
 
 
-class OcrocrAcctReaderTest extends Specification {
+class OcrFileReaderTest extends Specification {
 	// class under test
 	def ocrAcctReader = new OcrFileReader()
 
