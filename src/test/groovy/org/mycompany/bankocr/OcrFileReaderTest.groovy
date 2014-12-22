@@ -124,7 +124,7 @@ class OcrocrAcctReaderTest extends Specification {
 		String s = ' _  _  _  _  _  _  _  _  _ '
 		
 		when:  "Spliting the line into distinct OCR segments"
-		def result = ocrAcctReader.splitOctDigitLine([],s)
+		def result = ocrAcctReader.splitOcrDigitLine(s)
 		
 		then:  "There should be a collection 9 space-dash-space Strings"
 		assert 9 == result.size()
