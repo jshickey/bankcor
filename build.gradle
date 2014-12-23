@@ -24,3 +24,7 @@ jacocoTestReport {
 		html.destination "${buildDir}/jacocoHtml"
 	}
 }
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.2.1'
+}
