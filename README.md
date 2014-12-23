@@ -1,24 +1,16 @@
-Groovy Application project template
-------------------------------------
+This project can be built using Gradle Wrapper, which will download the correct version of gradle to build the project.
 
-You have just created a basic Groovy application. There is a standard project
-structure for source code and tests.
+* git clone https://github.com/jshickey/bankcor.git
+* cd bankcor
 
-In this project you get:
+* run ./gradlew to build the project for mac and unix, or gradlew.bat on windows 
 
-* A Gradle build file
-* A standard project structure:
+* run ./gradlew test to run the tests
+ + JUnit report is in build/reports/tests/index.html
+ + Spock test report is in build/spock-reports/index.html
 
-    <proj>
-      |
-      +- src
-          |
-          +- main
-          |     |
-          |     +- groovy
-          |
-          +- test
-          |   |
-          |   +- groovy
+* run ./gradlew jacocoTestReport to create the code coverage report
+ + The Jacoco report is in build/jacocoHtml/index.html
+ 
 
-          |
+Note: The Jacoco struggles with detecting execution branches in Groovy code.
