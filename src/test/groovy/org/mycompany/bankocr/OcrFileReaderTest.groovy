@@ -6,7 +6,6 @@ import spock.lang.*
 class OcrFileReaderTest extends Specification {
 	// class under test
 	def ocrAcctReader = new OcrFileReader()
-
 	void "Test with 500 accounts - crate report with findings(valid,error,illegible) from five-hundred-accounts.txt"() {
 		given: 'A test file with 500 accounts'
 		def testFile = '/account-numbers-all-types.txt'

@@ -61,7 +61,17 @@ enum OcrDigit {
 		values().find { it.value == s }?.decimalValue ?: '?'
 	}
 	
+	static String decimalToOcr( String s ) {
+		values().find { it.decimalValue == s }.value
+	}
+
+	
 	static OcrDigit findByOcrValue( String s ) {
 		values().find { it.value == s }
 	}
+
+	static OcrDigit findByDecimalNumber( String s ) {
+		values().find { it.decimalValue == s }
+	}
+
 }
