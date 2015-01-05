@@ -21,7 +21,7 @@ class OcrFileReader {
 	 * @return a collection of account numbers with checksum/legibility indicators
 	 */
 	List<String> createAccountNumberReportFromFile(String file) {
-		collectAccountNumbersFromFile(file).collect { acctNum ->
+		collectAccountNumbersFromFile(file).collect { acctNum, ocrNum ->
 	 		def finding = accountNumberFinding(acctNum)
 			finding ? "$acctNum $finding" : acctNum
 		}
@@ -50,7 +50,7 @@ class OcrFileReader {
 	 * @param file contains OCR account numbers
 	 * @return list of actual account numbers
 	 */
-	List<String> collectAccountNumbersFromFile(String file) {
+	List<Tuple> collectAccountNumbersFromFile(String file) {
 		collectAccountNumbers([], new File(file).readLines())
 	}
 
@@ -66,35 +66,47 @@ class OcrFileReader {
 	 * @param lines
 	 * @return
 	 */
-	List<String> collectAccountNumbers(List<String> acc, List<String> lines) {
+	List<Tuple> collectAccountNumbers(List<Tuple> acc, List<String> lines) {
 		lines ? collectAccountNumbers(acc << convertOcrDigitsToAccountNumber(lines.take(ROWS_PER_ACCOUNT)), 
 																			 lines.drop(ROWS_PER_ACCOUNT +1))
               : acc
 	}
 
 	/**
-	 * This method is responsible for orchestrating the conversion of one OCR account number
+	 * This method is responsible for conversion of one OCR account number
 	 * into an actual account number.
-	 *
-	 * First, it calls a method returns a list of lists which contain 9 three-char segments.
-	 *
-	 * .transpose() acts like a zipper, creating a new list of lists that aggregates the corresponding
-	 * positions in each of the three collections so that the three parts of one OCR digit
-	 * are grouped together.
 	 *
 	 * .join() will create one OCR Digit string from the 1st, 2nd and 3rd part of each OCR Digit
 	 *
-	 *  OcrDigit.ocrToDecimal() will take the complete OCR string for one digit and return an actual number.
+	 * OcrDigit.ocrToDecimal() will take the complete OCR string for one digit and return an actual number.
+	 * 
+	 * @param lines
+	 * @return
+	 */
+	List<Tuple> convertOcrDigitsToAccountNumber(List<String> lines) {
+		convertOcrLinesToDigits(lines)
+			.collect { ocrNumber -> [OcrDigit.ocrToDecimal(ocrNumber), ocrNumber] }
+			.transpose()
+			*.join()
+	}
+
+	/**
+	 * This method creates list of Strings, each which contain nine chars for an OCR Digit
+	 * in the account number. 
 	 *
- 	 */
-	String convertOcrDigitsToAccountNumber(List<String> lines) {
+	 * .transpose() acts like a Haskell zipper, creating a new list of lists that aggregates the corresponding
+	 * positions in each of the three collections so that the three parts of one OCR digit
+	 * are grouped together.
+
+	 * @param lines
+	 * @return
+	 */
+	List<String> convertOcrLinesToDigits(List<String> lines) {
 		collectSplitOcrDigitsLines(lines)
 			.transpose()
 			*.join()
-			.collect { OcrDigit.ocrToDecimal(it) }
-			.join()
 	}
-
+	
 	/**
 	 * Returns a collection of 3 lists, each list have the 9 distinct parts from reading one of the
 	 * three rows in a Bank OCR Account number.

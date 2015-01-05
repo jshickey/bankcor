@@ -75,7 +75,7 @@ class OcrFileReaderTest extends Specification {
 
 		then:
 		assert 1 == accountNumbers.size()
-		assert '000000000' == accountNumbers[0]
+		assert '000000000' == accountNumbers[0].getAt(0)
 	}
 
 	void "Test reading accounts from a file with many accounts"() {
@@ -85,11 +85,11 @@ class OcrFileReaderTest extends Specification {
 
 		then:
 		assert 5 == accountNumbers.size()
-		assert '000000000' == accountNumbers[0]
-		assert '111111111' == accountNumbers[1]
-		assert '123456789' == accountNumbers[2]
-		assert '222222222' == accountNumbers[3]
-		assert '333333333' == accountNumbers[4]
+		assert '000000000' == accountNumbers[0].getAt(0)
+		assert '111111111' == accountNumbers[1].getAt(0)
+		assert '123456789' == accountNumbers[2].getAt(0)
+		assert '222222222' == accountNumbers[3].getAt(0)
+		assert '333333333' == accountNumbers[4].getAt(0)
 	}
 
 
@@ -98,7 +98,7 @@ class OcrFileReaderTest extends Specification {
 	void "Convert OCR Digit version of #expectedAccountNumber"() {
 		expect: "#expectedAccountNumber"
 		List<String> lines = new File(this.getClass().getResource('/'+filename).file as String).readLines()
-		def acctNum = ocrAcctReader.convertOcrDigitsToAccountNumber(lines.take(3) as List<String>)
+		def (acctNum,ocrDigit) = ocrAcctReader.convertOcrDigitsToAccountNumber(lines.take(3) as List<String>)
 		assert expectedAccountNumber == acctNum
 
 		where: 'The test file:#filename contains the OCR Digit version of #expectedAccountNumber'

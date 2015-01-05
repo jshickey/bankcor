@@ -5,35 +5,41 @@ import org.mycompany.bankocr.OcrDigit;
 import spock.lang.*
 
 class OcrErrorCorrectionUtilTest extends Specification {
-	
-	void "Test converting account number 888888888 to something that is valid"() {
-		given:
-		def invalidAccountNumber = '888888888'
-		
-		when:
-		def result = errUtil.findAlternateValidNumber(invalidAccountNumber)
-		
-	   then:
-	   assert 3 == result.size()
-	   assert result.contains('888886888')
-	   assert result.contains('888888880')
-	   assert result.contains('888888988')
-	}
-	
-	void "Test converting account number 777777777 to something that is valid"() {
-		given:
-		def invalidAccountNumber = '777777777'
-		
-		when:
-		def result = errUtil.findAlternateValidNumber(invalidAccountNumber)
-		
-	   then:
-	   assert '777777177' == result[0]
-
-	}
-	
 	// class under test
 	OcrErrorCorrectionUtil errUtil = new OcrErrorCorrectionUtil()
+	OcrFileReader fileReader = new OcrFileReader()
+	
+	@Unroll
+	void "Test converting invalid account number, #invalidAccountNumber,  to something that is ambiguous, #validAccountNumbers"() {
+		expect:
+		def result = errUtil.findAlternateValidNumber(invalidAccountNumber)
+	    assert validAccountNumbers.size() == result.size()
+		result.each { assert validAccountNumbers.contains(it) }
+		
+	    where:
+	    invalidAccountNumber | validAccountNumbers
+	    '888888888'          | ['888886888','888888880','888888988']
+		'555555555'          | ['555655555', '559555555']
+		'666666666'          | ['666566666', '686666666']
+		'999999999'          | ['899999999', '993999999', '999959999']
+		'490067715'          | ['490067115', '490067719', '490867715']
+	}
+	
+	@Unroll
+	void "Test converting invalid account number, #invalidAccountNumber, to something that is valid, #validAccountNumber"() {
+		
+		expect:
+		def result = errUtil.findAlternateValidNumber(invalidAccountNumber)
+		assert validAccountNumber == result[0]
+		
+		where: 'The test account number is #accountNumber'
+		invalidAccountNumber | validAccountNumber
+		'111111111'          | '711111111'
+		'777777777'          | '777777177'
+		'200000000'          | '200800000'
+		'333333333'          | '333393333'
+	}
+	
 
 	void "Test converting simple account number to something that is valid"() {
 		given:
@@ -47,8 +53,6 @@ class OcrErrorCorrectionUtilTest extends Specification {
 
 	}
 
-	
-	
 	void "Test converting first digit to something that is valid"() {
 		given:
 		int index = 0
@@ -61,6 +65,28 @@ class OcrErrorCorrectionUtilTest extends Specification {
 	   assert '711111111' == result 
 
 	}
+	
+	void "Test collecting alternative integers for all Digits in an OCR number"() {
+		given: " an illegilbe account number"
+		def illegibleOcrNumber =["    _  _     _  _  _  _  _ ",
+                                 " _| _| _||_||_ |_   ||_||_|",
+							     "  ||_  _|  | _||_|  ||_| _|"]
+                           
+		when: "convert OCR Digit to number"
+		def ocrDigitList = fileReader.collectSplitOcrDigitsLines(illegibleOcrNumber)
+							.transpose()
+							*.join()
+		def accountNumber = ocrDigitList.collect { OcrDigit.ocrToDecimal(it) }.join()
+		def illegibleDigit = ocrDigitList[accountNumber.indexOf('?')]
+		def numbers = errUtil.collectUsingAlternateCharacters(illegibleDigit).findAll{ !it.contains('?') }
+		def possibleAccountNumbers = numbers.collect { number -> accountNumber.replace('?', number) }
+		
+		then: "should get back the number one"
+		assert 2 == possibleAccountNumbers.size()
+		assert possibleAccountNumbers.contains('123456789')
+		assert possibleAccountNumbers.contains('423456789')
+	}
+
 	
 	void "Test collecting alternative integers at all indices in an OCR number"() {
 		given: " an illegible number for ONE "
